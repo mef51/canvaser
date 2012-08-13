@@ -1,13 +1,15 @@
 // Canvas helper library meant to be used with jQuery.
 
-// a function meant to help with the 'initial' code for using a canvas.
-// given an 'id', will return an object with:
-// canvas : the jQuery canvas object.
-// context : the 2D rendering context of the canvas
-// width : width of the canvas
-// height : height of the canvas
-// usage:
-// var Canvas = getCanvas("myCanvas");
+/** a function meant to help with the 'initial' code for using a canvas.
+* given an 'id', will return an object with:
+* canvas : the jQuery canvas object.
+* context : the 2D rendering context of the canvas
+* width : width of the canvas
+* height : height of the canvas
+*
+* use like this:
+* var Canvas = getCanvas("myCanvas");
+*/
 function getCanvas(id) {
     return {
         canvas : $("#" + id),
@@ -15,6 +17,17 @@ function getCanvas(id) {
         width : canvas.width(),
         height : canvas.height()
     };
+}
+
+/** 
+* Sets the size of the canvas element.
+* Canvas is an object like the one returned by getCanvas()
+*/
+function setCanvasSize(width, height, Canvas) {
+    Canvas.canvas[0].width = width;
+    Canvas.canvas[0].height = height;
+    Canvas.width = Canvas.canvas.width();
+    Canvas.height = Canvas.canvas.height();
 }
 
 // draw a line from (xf, yf) to (xt, yt)
