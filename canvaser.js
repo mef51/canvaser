@@ -51,10 +51,10 @@ function drawQuadratic(FromPoint, ToPoint, AnchorPoint, context) {
     context.stroke();
 }
 
-function drawBezierCurve(FromPoint, ToPoint, Anchor1Point, Anchor2Point, context) {
+function drawBezierCurve(FromPoint, ToPoint, AnchorPoint1, AnchorPoint2, context) {
     context.beginPath();
     context.moveTo(FromPoint.x, FromPoint.y);
-    context.bezierCurveTo(Anchor1Point.x, Anchor1Point.y, Anchor2Point.x, Anchor2Point.y, ToPoint.x, ToPoint.y);
+    context.bezierCurveTo(AnchorPoint1.x, AnchorPoint1.y, AnchorPoint2.x, AnchorPoint2.y, ToPoint.x, ToPoint.y);
     context.stroke();
 }
 
