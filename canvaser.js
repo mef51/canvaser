@@ -11,11 +11,12 @@
 * var Canvas = getCanvas("myCanvas");
 */
 function getCanvas(id) {
+    var c = $("#" + id);
     return {
-        canvas : $("#" + id),
-        context : canvas[0].getContext("2d"),
-        width : canvas.width(),
-        height : canvas.height()
+        canvas : c,
+        context : c[0].getContext("2d"),
+        width : c.width(),
+        height : c.height()
     };
 }
 
