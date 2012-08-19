@@ -1,4 +1,10 @@
-// Canvas helper library meant to be used with jQuery.
+/**
+* canvaser.js - Canvas helper library meant to be used with jQuery.
+* ===================================================
+* As a convention, the library uses the Canvas object defined by getCanvas().
+* As another convention, Canvas is the last parameter to most functions
+* in the library.
+*/
 
 /** a function meant to help with the 'initial' code for using a canvas.
 * given an 'id', will return an object with:
@@ -29,6 +35,44 @@ function setCanvasSize(width, height, Canvas) {
     Canvas.canvas[0].height = height;
     Canvas.width = Canvas.canvas.width();
     Canvas.height = Canvas.canvas.height();
+}
+
+/**
+* Fills a string at x, and y.
+* Use setStyle to set the font beforehand
+* Font size is set with the context.font property.
+*/
+function fillString(string, x, y, Canvas) {
+    Canvas.context.fillText(string, x, y);
+}
+
+/**
+* Fills a string at x, and y.
+* options is an object that is passed to setStyle()
+* Font size is set with the context.font property.
+*/
+function fillString (string, x, y, options, Canvas) {
+    setStyle(options);
+    fillString(string, x, y, Canvas);
+}
+
+/**
+* Strokes a string at x, and y.
+* Use setStyle to set the font beforehand
+* Font size is set with the context.font property.
+*/
+function strokeString(string, x, y, Canvas) {
+    Canvas.context.strokeText(string, x, y);
+}
+
+/**
+* Fills a string at x, and y.
+* options is an object that is passed to setStyle()
+* Font size is set with the context.font property.
+*/
+function strokeString (string, x, y, options, Canvas) {
+    setStyle(options);
+    strokeString(string, x, y, Canvas);
 }
 
 /**
@@ -85,6 +129,15 @@ function drawCell(color, strokeColor, cell, cellWidth, cellHeight, Canvas) {
     Canvas.context.strokeRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
 }
 
+/**
+* Convenience method for setting the style of the
+* Canvas's context with an options object.
+* Create an object 'options' that holds all the styling you want
+* and then pass it as a parameter to setStyle(). setStyle
+* will set all the options within the object.
+* The actual options should be the standard options
+* of the HTML5 context object returned by canvas.getContext("2d")
+*/
 function setStyle(options, Canvas) {
     if(typeof options.lineWidth == "number")
         Canvas.context.lineWidth = options.lineWidth;
@@ -96,5 +149,9 @@ function setStyle(options, Canvas) {
         Canvas.context.lineJoin = options.lineJoin;
     if(typeof options.fillStyle == "string")
         Canvas.context.fillStyle = options.fillStyle;
+    if(typeof options.textBaseline == "string")
+        Canvas.context.textBaseline = options.textBaseline;
+    if(typeof options.font == "string")
+        Canvas.context.font = options.font;
 }
 
