@@ -47,11 +47,11 @@ function fillString(string, x, y, Canvas) {
 }
 
 /**
-* Fills a string at x, and y.
+* Fills a string at x, and y, with styles defined by the object "options".
 * options is an object that is passed to setStyle()
 * Font size is set with the context.font property.
 */
-function fillString (string, x, y, options, Canvas) {
+function fillStyledString (string, x, y, options, Canvas) {
     setStyle(options);
     fillString(string, x, y, Canvas);
 }
@@ -66,11 +66,11 @@ function strokeString(string, x, y, Canvas) {
 }
 
 /**
-* Fills a string at x, and y.
+* Fills a string at x, and y, with styles defined by the object "options".
 * options is an object that is passed to setStyle()
 * Font size is set with the context.font property.
 */
-function strokeString (string, x, y, options, Canvas) {
+function strokeStyledString (string, x, y, options, Canvas) {
     setStyle(options);
     strokeString(string, x, y, Canvas);
 }
