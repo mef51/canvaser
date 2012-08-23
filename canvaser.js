@@ -35,6 +35,7 @@ function setCanvasSize(width, height, Canvas) {
     Canvas.canvas[0].height = height;
     Canvas.width = Canvas.canvas.width();
     Canvas.height = Canvas.canvas.height();
+    return "ok";
 }
 
 /**
@@ -107,18 +108,20 @@ function drawBezierCurve(FromPoint, ToPoint, AnchorPoint1, AnchorPoint2, Canvas)
 }
 
 /**
-* Draws a background of color 'color' and strokes it black.
+* Draws a background of color 'color' and draws a border of 'strokeColor'
 * color is a string
+* strokeColor is a string, is the color of the border
 * width is a number
 * height is a number
 * Canvas is the canvas you want to draw on, it's context will be used.
 */
-function drawBackground(color, width, height, Canvas) {
+function drawBackground(color, strokeColor, width, height, Canvas) {
     // the background and border of the canvas.
-    drawCell(color, "black", {x:0, y:0}, width, height, Canvas.context);
+    drawCell(color, strokeColor, {x:0, y:0}, width, height, Canvas);
 }
 
 /**
+* Use this for tile-based graphics. It restreches the pixel grid.
 * Draws a cell at cell.x and cell.y of color 'color' and strokes it with 'strokeColor'
 * and of width 'cellWidth' and height 'cellHeight' in the rendering context of 'Canvas.context'. whew.
 */
@@ -127,6 +130,20 @@ function drawCell(color, strokeColor, cell, cellWidth, cellHeight, Canvas) {
     Canvas.context.fillRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
     Canvas.context.strokeStyle = strokeColor;
     Canvas.context.strokeRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
+}
+
+/**
+* Draws a rectangle at position.x and position.y.
+* Fills it with color 'color'.
+* Draws a border with a color of 'strokeColor'.
+* The rectangle is 'width' wide and 'height' high.
+* The rectangle is drawn on the rendering context of 'Canvas'.
+*/
+function drawRect(color, strokeColor, position, width, height, Canvas) {
+    Canvas.context.fillStyle = color;
+    Canvas.context.fillRect(position.x, position.y, width, height);
+    Canvas.context.strokeStyle = strokeColor;
+    Canvas.context.strokeRect(position.x, position.y, width, height);
 }
 
 /**
