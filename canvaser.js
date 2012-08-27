@@ -101,10 +101,10 @@ function getCanvas(id) {
         },
 
         drawBezierCurve: function(FromPoint, ToPoint, AnchorPoint1, AnchorPoint2) {
-                this.context.beginPath();
-                this.context.moveTo(FromPoint.x, FromPoint.y);
-                this.context.bezierCurveTo(AnchorPoint1.x, AnchorPoint1.y, AnchorPoint2.x, AnchorPoint2.y, ToPoint.x, ToPoint.y);
-                this.context.stroke();
+            this.context.beginPath();
+            this.context.moveTo(FromPoint.x, FromPoint.y);
+            this.context.bezierCurveTo(AnchorPoint1.x, AnchorPoint1.y, AnchorPoint2.x, AnchorPoint2.y, ToPoint.x, ToPoint.y);
+            this.context.stroke();
         },
 
         /**
