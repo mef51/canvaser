@@ -12,6 +12,7 @@
 * context : the 2D rendering context of the canvas
 * width : width of the canvas
 * height : height of the canvas
+* and a bunch of API functions that wrap around the standard HTML5 Canvas API
 *
 * use like this:
 * var Canvas = getCanvas("myCanvas");
@@ -19,156 +20,152 @@
 function getCanvas(id) {
     var c = $("#" + id);
     return {
-        canvas : c,
-        context : c[0].getContext("2d"),
-        width : c.width(),
-        height : c.height()
+        canvas: c,
+        context: c[0].getContext("2d"),
+        width: c.width(),
+        height: c.height(),
+
+        /**
+        * Sets the size of the canvas element.
+        */
+        setCanvasSize: function(width, height) {
+            this.canvas[0].width = width;
+            this.canvas[0].height = height;
+            this.width = this.canvas.width();
+            this.height = this.canvas.height();
+            return "ok";
+        },
+
+        /**
+        * Fills a string at x, and y.
+        * Use setStyle to set the font beforehand
+        * Font size is set with the context.font property.
+        */
+        fillString: function(string, x, y) {
+            this.context.fillText(string, x, y);
+        },
+
+        /**
+        * Fills a string at x, and y, with styles defined by the object "options".
+        * options is an object that is passed to setStyle()
+        * Font size is set with the context.font property.
+        */
+        fillStyledString: function(string, x, y, options) {
+            this.setStyle(options);
+            this.fillString(string, x, y);
+        },
+
+        /**
+        * Strokes a string at x, and y.
+        * Use setStyle to set the font beforehand
+        * Font size is set with the context.font property.
+        */
+        strokeString: function(string, x, y) {
+            this.context.strokeText(string, x, y);
+        },
+
+        /**
+        * Strokes a string at x, and y, with styles defined by the object "options".
+        * options is an object that is passed to setStyle()
+        * Font size is set with the context.font property.
+        */
+        strokeStyledString: function(string, x, y, options) {
+            this.setStyle(options);
+            this.strokeString(string, x, y);
+        },
+
+        /**
+        * Draw a line from (xf, yf) to (xt, yt)
+        */
+        drawLine: function(xf, yf, xt, yt) {
+            this.context.beginPath();
+            this.context.moveTo(xf, yf);
+            this.context.lineTo(xt, yt);
+            this.context.stroke();
+        },
+
+        drawArc: function(xOrigin, yOrigin, radius, startAngle, endAngle, isAntiClockwise) {
+            this.context.beginPath();
+            this.context.arc(xOrigin, yOrigin, radius, startAngle, endAngle, isAntiClockwise);
+            this.context.stroke();
+        },
+
+        /**
+        * Each parameter is an object of the form {x:number, y:number}
+        */
+        drawQuadratic: function(FromPoint, ToPoint, AnchorPoint) {
+            this.context.beginPath();
+            this.context.moveTo(FromPoint.x, FromPoint.y);
+            this.context.quadraticCurveTo(AnchorPoint.x, AnchorPoint.y, ToPoint.x, ToPoint.y);
+            this.context.stroke();
+        },
+
+        drawBezierCurve: function(FromPoint, ToPoint, AnchorPoint1, AnchorPoint2) {
+                this.context.beginPath();
+                this.context.moveTo(FromPoint.x, FromPoint.y);
+                this.context.bezierCurveTo(AnchorPoint1.x, AnchorPoint1.y, AnchorPoint2.x, AnchorPoint2.y, ToPoint.x, ToPoint.y);
+                this.context.stroke();
+        },
+
+        /**
+        * Draws a background of color 'color' and draws a border of 'strokeColor' around the whole canvas
+        * color is a string
+        * strokeColor is a string, is the color of the border
+        */
+        drawBackground: function(color, strokeColor) {
+            // the background and border of the canvas.
+            this.drawRect(color, strokeColor, {x:0, y:0}, this.width, this.height);
+        },
+
+        /**
+        * Use this for tile-based graphics. It restreches the pixel grid.
+        * Draws a cell at cell.x and cell.y of color 'color' and strokes it with 'strokeColor'
+        * and of width 'cellWidth' and height 'cellHeight' in the rendering context of 'this.context'. whew.
+        */
+        drawCell: function(color, strokeColor, cell, cellWidth, cellHeight) {
+            this.context.fillStyle = color;
+            this.context.fillRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
+            this.context.strokeStyle = strokeColor;
+            this.context.strokeRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
+        },
+
+        /**
+        * Draws a rectangle at position.x and position.y.
+        * Fills it with color 'color'.
+        * Draws a border with a color of 'strokeColor'.
+        * The rectangle is 'width' wide and 'height' high.
+        */
+        drawRect: function(color, strokeColor, position, width, height) {
+            this.context.fillStyle = color;
+            this.context.fillRect(position.x, position.y, width, height);
+            this.context.strokeStyle = strokeColor;
+            this.context.strokeRect(position.x, position.y, width, height);
+        },
+
+        /**
+        * Convenience method for setting the style of the
+        * Canvas's context with an options object.
+        * Create an object 'options' that holds all the styling you want
+        * and then pass it as a parameter to setStyle(). setStyle
+        * will set all the options within the object.
+        * The actual options should be the standard options
+        * of the HTML5 context object returned by canvas.getContext("2d")
+        */
+        setStyle: function(options) {
+            if(typeof options.lineWidth == "number")
+                this.context.lineWidth = options.lineWidth;
+            if(typeof options.strokeStyle == "string")
+                this.context.strokeStyle = options.strokeStyle;
+            if(typeof options.lineCap == "string")
+                this.context.lineCap = options.lineCap;
+            if(typeof options.lineJoin == "string")
+                this.context.lineJoin = options.lineJoin;
+            if(typeof options.fillStyle == "string")
+                this.context.fillStyle = options.fillStyle;
+            if(typeof options.textBaseline == "string")
+                this.context.textBaseline = options.textBaseline;
+            if(typeof options.font == "string")
+                this.context.font = options.font;
+        }
     };
-}
-
-/** 
-* Sets the size of the canvas element.
-* Canvas is an object like the one returned by getCanvas()
-*/
-function setCanvasSize(width, height, Canvas) {
-    Canvas.canvas[0].width = width;
-    Canvas.canvas[0].height = height;
-    Canvas.width = Canvas.canvas.width();
-    Canvas.height = Canvas.canvas.height();
-    return "ok";
-}
-
-/**
-* Fills a string at x, and y.
-* Use setStyle to set the font beforehand
-* Font size is set with the context.font property.
-*/
-function fillString(string, x, y, Canvas) {
-    Canvas.context.fillText(string, x, y);
-}
-
-/**
-* Fills a string at x, and y, with styles defined by the object "options".
-* options is an object that is passed to setStyle()
-* Font size is set with the context.font property.
-*/
-function fillStyledString (string, x, y, options, Canvas) {
-    setStyle(options);
-    fillString(string, x, y, Canvas);
-}
-
-/**
-* Strokes a string at x, and y.
-* Use setStyle to set the font beforehand
-* Font size is set with the context.font property.
-*/
-function strokeString(string, x, y, Canvas) {
-    Canvas.context.strokeText(string, x, y);
-}
-
-/**
-* Fills a string at x, and y, with styles defined by the object "options".
-* options is an object that is passed to setStyle()
-* Font size is set with the context.font property.
-*/
-function strokeStyledString (string, x, y, options, Canvas) {
-    setStyle(options);
-    strokeString(string, x, y, Canvas);
-}
-
-/**
-* Draw a line from (xf, yf) to (xt, yt)
-* Uses the context from Canvas.context
-*/
-function drawLine(xf, yf, xt, yt, Canvas) {
-    Canvas.context.beginPath();
-    Canvas.context.moveTo(xf, yf);
-    Canvas.context.lineTo(xt, yt);
-    Canvas.context.stroke();
-}
-
-function drawArc(xOrigin, yOrigin, radius, sAngle, eAngle, isAntiClockwise, Canvas) {
-    Canvas.context.beginPath();
-    Canvas.context.arc(xOrigin, yOrigin, radius, sAngle, eAngle, isAntiClockwise);
-    Canvas.context.stroke();
-}
-
-function drawQuadratic(FromPoint, ToPoint, AnchorPoint, Canvas) {
-    Canvas.context.beginPath();
-    Canvas.context.moveTo(FromPoint.x, FromPoint.y);
-    Canvas.context.quadraticCurveTo(AnchorPoint.x, AnchorPoint.y, ToPoint.x, ToPoint.y);
-    Canvas.context.stroke();
-}
-
-function drawBezierCurve(FromPoint, ToPoint, AnchorPoint1, AnchorPoint2, Canvas) {
-    Canvas.context.beginPath();
-    Canvas.context.moveTo(FromPoint.x, FromPoint.y);
-    Canvas.context.bezierCurveTo(AnchorPoint1.x, AnchorPoint1.y, AnchorPoint2.x, AnchorPoint2.y, ToPoint.x, ToPoint.y);
-    Canvas.context.stroke();
-}
-
-/**
-* Draws a background of color 'color' and draws a border of 'strokeColor'
-* color is a string
-* strokeColor is a string, is the color of the border
-* width is a number
-* height is a number
-* Canvas is the canvas you want to draw on, it's context will be used.
-*/
-function drawBackground(color, strokeColor, width, height, Canvas) {
-    // the background and border of the canvas.
-    drawCell(color, strokeColor, {x:0, y:0}, width, height, Canvas);
-}
-
-/**
-* Use this for tile-based graphics. It restreches the pixel grid.
-* Draws a cell at cell.x and cell.y of color 'color' and strokes it with 'strokeColor'
-* and of width 'cellWidth' and height 'cellHeight' in the rendering context of 'Canvas.context'. whew.
-*/
-function drawCell(color, strokeColor, cell, cellWidth, cellHeight, Canvas) {
-    Canvas.context.fillStyle = color;
-    Canvas.context.fillRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
-    Canvas.context.strokeStyle = strokeColor;
-    Canvas.context.strokeRect(cell.x * cellWidth, cell.y * cellHeight, cellWidth, cellHeight);
-}
-
-/**
-* Draws a rectangle at position.x and position.y.
-* Fills it with color 'color'.
-* Draws a border with a color of 'strokeColor'.
-* The rectangle is 'width' wide and 'height' high.
-* The rectangle is drawn on the rendering context of 'Canvas'.
-*/
-function drawRect(color, strokeColor, position, width, height, Canvas) {
-    Canvas.context.fillStyle = color;
-    Canvas.context.fillRect(position.x, position.y, width, height);
-    Canvas.context.strokeStyle = strokeColor;
-    Canvas.context.strokeRect(position.x, position.y, width, height);
-}
-
-/**
-* Convenience method for setting the style of the
-* Canvas's context with an options object.
-* Create an object 'options' that holds all the styling you want
-* and then pass it as a parameter to setStyle(). setStyle
-* will set all the options within the object.
-* The actual options should be the standard options
-* of the HTML5 context object returned by canvas.getContext("2d")
-*/
-function setStyle(options, Canvas) {
-    if(typeof options.lineWidth == "number")
-        Canvas.context.lineWidth = options.lineWidth;
-    if(typeof options.strokeStyle == "string")
-        Canvas.context.strokeStyle = options.strokeStyle;
-    if(typeof options.lineCap == "string")
-        Canvas.context.lineCap = options.lineCap;
-    if(typeof options.lineJoin == "string")
-        Canvas.context.lineJoin = options.lineJoin;
-    if(typeof options.fillStyle == "string")
-        Canvas.context.fillStyle = options.fillStyle;
-    if(typeof options.textBaseline == "string")
-        Canvas.context.textBaseline = options.textBaseline;
-    if(typeof options.font == "string")
-        Canvas.context.font = options.font;
-}
-
+} // end 
