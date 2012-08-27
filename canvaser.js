@@ -1,9 +1,6 @@
 /**
 * canvaser.js - Canvas helper library meant to be used with jQuery.
 * ===================================================
-* As a convention, the library uses the Canvas object defined by getCanvas().
-* As another convention, Canvas is the last parameter to most functions
-* in the library.
 */
 
 /** a function meant to help with the 'initial' code for using a canvas.
